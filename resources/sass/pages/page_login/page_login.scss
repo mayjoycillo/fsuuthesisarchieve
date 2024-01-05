@@ -1,0 +1,192 @@
+#PageLogin,
+#LoginRightContent {
+    background-color: transparent;
+    background-image: url("../../../images/login_bg.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+    .ant-layout-content {
+        .container {
+            background-color: transparent;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+
+            .left {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                font-family: "RobotoRegular";
+
+                .logo-wrapper {
+                    text-align: center;
+                }
+
+                .title {
+                    color: #ffffff;
+                    letter-spacing: 12px;
+                    line-height: 1;
+                    font-weight: bolder;
+                    font-family: "RobotoRegular";
+                    font-size: 95px;
+                    padding-top: 50px;
+                }
+
+                .sub-title {
+                    color: #ffffff;
+                    letter-spacing: 1px;
+                    font-weight: 100;
+                    font-size: 16px;
+                }
+            }
+
+            .right {
+                margin: 5% 10% 8%;
+                width: 400px;
+
+                .ant-tabs {
+                    .ant-tabs-nav {
+                        margin: 0;
+                        &::before {
+                            border: 0px;
+                        }
+
+                        .ant-tabs-nav-wrap {
+                            .ant-tabs-nav-list {
+                                .ant-tabs-tab {
+                                    border: 0px;
+                                    background-color: transparent;
+                                    .ant-tabs-tab-btn {
+                                        color: #ffffff;
+                                    }
+
+                                    &.ant-tabs-tab-active {
+                                        background-color: #ffffff !important;
+                                        .ant-tabs-tab-btn {
+                                            color: #000000 !important;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .ant-card {
+                    border-radius: 5%;
+                    border-top-left-radius: 0%;
+                    box-shadow: rgba(5, 2, 1, 0.2) 4px 4px 4px;
+                }
+
+                .nav-bar {
+                    ul {
+                        display: flex;
+                        padding: 0px;
+                        margin: 0;
+
+                        li {
+                            padding: 5px;
+                            width: 20%;
+                            list-style: none;
+                            text-align: center;
+                            color: #ffffff;
+                            border-top-right-radius: 8px;
+                            border-top-left-radius: 8px;
+
+                            background-color: #2a60d4;
+                            opacity: 0.8;
+
+                            a {
+                                text-decoration: none;
+                                color: #ffffff;
+                                font-weight: 600;
+                            }
+                        }
+
+                        .active-tab {
+                            background-color: #ffffff;
+                            opacity: 1 !important;
+                            font-weight: 600;
+                            a {
+                                color: #000000 !important;
+                            }
+                        }
+                    }
+                }
+
+                .ant-card {
+                    border: none;
+                    width: 100%;
+                    height: 650px;
+
+                    .ant-card-body {
+                        width: 100%;
+
+                        img {
+                            width: 150px;
+                            padding-top: 20px;
+                        }
+
+                        .text-1 {
+                            font-weight: bolder;
+                            font-size: 18px;
+                        }
+
+                        .text-log-in {
+                            font-weight: bolder;
+                            font-size: 28px;
+                            margin: 0 0 30px;
+                        }
+
+                        .btn-log-in,
+                        .btn-continue {
+                            border-radius: 5px !important;
+                            box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+                            background-color: #2a60d4;
+                            color: #ffffff;
+                        }
+
+                        .btn-sign-up {
+                            background-color: #ffffff;
+                            border: 1px solid #000000;
+                            border-radius: 5px !important;
+                            font-weight: 600;
+                            color: #000000;
+                            padding: 0 30px 0;
+                            margin: 20px 0px 30px;
+                            float: right;
+                        }
+
+                        .ant-form {
+                            .date {
+                                margin-bottom: 0px;
+
+                                .date-format {
+                                    margin: 0px 12px 10px;
+                                    font-size: 12px;
+                                }
+
+                                .date-label {
+                                    margin-bottom: 0px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .ant-layout-footer {
+        background-color: transparent;
+        text-align: center;
+        padding-top: 0px;
+
+        .ant-typography {
+            color: #ffffff;
+        }
+    }
+}

@@ -1,0 +1,49 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+// Variables
+@import "variables";
+
+// Bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+@import "./ui/mixin/mixin";
+@import "./ui/colors/colors";
+@import "./ui/helper/helper";
+
+@import "./ui/input/input";
+@import "./ui/button/button";
+@import "./ui/radio/radio";
+@import "./ui/alert/alert";
+@import "./ui/collapse/collapse";
+@import "./ui/card/card";
+@import "./ui/table/table";
+@import "./ui/modal/modal";
+@import "./ui/popover/popover";
+@import "./ui/notification/notification";
+@import "./ui/checkbox/checkbox";
+@import "./ui/form/form";
+@import "./ui/private-layout/private-layout";
+@import "./ui/header/header";
+@import "./ui/sidemenu/sidemenu";
+
+@import "./pages/page_login/page_login";
+@import "./pages/page_users/page_users";
+@import "./pages/page_facultyload/page_facultyload";
+@import "./pages/page_edit_profile/page_edit_profile";
+@import "./pages/page_references/page_references";
+@import "./pages/page_employee/page_employee";
+@import "./pages/page_permission/page_permission";
+
+// Register SCSS
+@import "./pages/page_register/page_register";
+@import "./pages/page_register/page_registerStudentProfile";
+@import "./pages/page_register/page_registerParentProfile";
+@import "./pages/page_register/page_registerAcademicProfile";
+@import "./pages/page_register/page_registerAdditionalInfo";
+@import "./pages/page_register/page_registerRightStep";
+@import "./pages/page_employee/page_employee";
+
+// Schedule SCSS
+@import "./pages/page_schedule/page_schedule";
+@import "./pages/page_schedule/page_schedulemodal";

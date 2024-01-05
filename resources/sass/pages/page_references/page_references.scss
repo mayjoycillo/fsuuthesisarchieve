@@ -1,0 +1,18 @@
+#PageUserRole {
+    .ant-tabs-nav {
+        .ant-tabs-nav-wrap {
+            .ant-tabs-tab {
+                border-radius: 0%;
+                height: 50px;
+            }
+            .ant-tabs-tab-active {
+                // border-top: 4px solid #3f86ff;
+                transform: translate(0px, 0px);
+                border-bottom: 0%;
+                .ant-tabs-tab-btn {
+                    color: #3f86ff;
+                }
+            }
+        }
+    }
+}

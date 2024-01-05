@@ -1,0 +1,182 @@
+#PageEmployeeForm {
+    .ant-collapse {
+        .ant-collapse-item {
+            &.collapse-item-account-info,
+            &.collapse-item-personal-info,
+            &.collapse-item-department-info {
+                .ant-collapse-content {
+                    .ant-collapse-content-box {
+                        padding-bottom: 0px !important;
+                    }
+                }
+            }
+
+            &.collapse-item-address-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .checkbox-group {
+                        display: flex;
+                        flex-direction: column;
+                    }
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+            &.collapse-item-benificiary-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+            &.collapse-item-contact-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+            &.collapse-item-family-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+
+                .form-spouse-group {
+                    .ant-row {
+                        row-gap: 0px !important;
+                    }
+
+                    .form-children-group {
+                        border-top: 1px dashed #444444;
+                    }
+                }
+            }
+            &.collapse-item-parent-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+            &.collapse-item-school-attended-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+            &.collapse-item-other-qualification-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+            &.collapse-item-examination-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+            &.collapse-item-project-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+            &.collapse-item-other-membership-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+            &.collapse-item-educational-travel-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+            &.collapse-item-references-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+            &.collapse-item-emergency-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+
+            &.collapse-item-work-experience-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+            &.collapse-item-training-certificate-info {
+                .action {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-list-remove-button {
+                        color: $mainSecondary;
+                    }
+                }
+            }
+        }
+    }
+}

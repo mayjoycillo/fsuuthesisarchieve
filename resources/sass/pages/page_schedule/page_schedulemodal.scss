@@ -1,0 +1,43 @@
+.ant-modal-root {
+    .ant-modal-mask {
+        background-color: rgba(0, 0, 0, 24%);
+    }
+    .ant-modal-wrap .ant-modal .react-draggable {
+        .ant-modal-content .ant-modal-body {
+            .ant-form .ant-form-item {
+                .schedule-wrapper {
+                    // background: #e7e4e4;
+                    margin-bottom: 20px;
+                    border-bottom: 1px dashed #c7bcbc;
+
+                    .action {
+                        float: right;
+                    }
+                }
+            }
+        }
+    }
+    .ant-modal-wrap {
+        &.modal-schedule-form {
+            .ant-modal {
+                .react-draggable {
+                    .ant-modal-content {
+                        .ant-modal-body {
+                            .ant-form .ant-form-item {
+                                .schedule-wrapper {
+                                    // background: #e7e4e4;
+                                    margin-bottom: 20px;
+                                    border-bottom: 1px dashed #c7bcbc;
+
+                                    .action {
+                                        float: right;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

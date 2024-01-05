@@ -1,0 +1,90 @@
+#PageFacultyLoadUploadExcel {
+    .ant-card-body {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .upload-faculty-load {
+        padding: 30px;
+        height: 100%;
+        border-style: dashed;
+
+        .ant-upload-drag-icon {
+            font-size: 56px;
+            margin: 0;
+            color: rgb(0, 119, 255);
+        }
+
+        &:hover {
+            background-color: rgba(252, 251, 251, 0.884);
+            .p {
+                font-size: 700;
+            }
+        }
+    }
+}
+
+// #PageFacultyLoadJustification {
+
+// }
+#PageFacultyLoadReport {
+    .filter-select {
+        .ant-form {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            height: 45px;
+
+            .ant-form-item {
+                @include atxxl {
+                    width: 20%;
+                }
+
+                @include atxl {
+                    width: 20%;
+                }
+
+                @include atmdMinMax {
+                    width: 40%;
+                }
+
+                @include atxs {
+                    width: 100%;
+                }
+            }
+        }
+    }
+    .tbl-top-filter {
+        height: 50px;
+        .ant-inpt-wrapper {
+            padding: 3px;
+        }
+    }
+}
+
+.modal-endorse-for-approval-form {
+    .ant-modal-body {
+        .ant-upload-drag-container {
+            .ant-upload-drag-icon {
+                svg {
+                    font-size: 22px;
+                    margin: 0;
+                    color: rgb(0, 119, 255);
+                }
+            }
+        }
+    }
+}
+
+.modal-justification-attachment-preview {
+    .ant-modal-content {
+        .ant-modal-body {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            .ant-image {
+                width: calc(50% - 5px);
+            }
+        }
+    }
+}
