@@ -87,11 +87,11 @@ class RefSchoolYearController extends Controller
             ];
         }
 
-        $building = RefSchoolYear::updateOrCreate([
+        $FindSchoolYear = RefSchoolYear::updateOrCreate([
             "id" => $request->id,
         ], $data);
 
-        if ($building) {
+        if ($FindSchoolYear) {
             $ret  = [
                 "success" => true,
                 "message" => "Data " . ($request->id ? "updated" : "saved") . " successfully"

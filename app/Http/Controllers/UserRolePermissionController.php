@@ -16,45 +16,7 @@ class UserRolePermissionController extends Controller
      */
     public function index(Request $request)
     {
-        $dataQuery = Module::with([
-            'module_buttons' => function ($query) use ($request) {
-                $query->with([
-                    "user_role_permissions" => function ($query) use ($request) {
-                        $query->where("user_role_id", $request->user_role_id);
-                    }
-                ]);
-            }
-        ]);
-
-        if ($request->system_id) {
-            $dataQuery->where('system_id', $request->system_id);
-        }
-
-        if ($request->sort_field && $request->sort_order) {
-            if (
-                $request->sort_field != '' && $request->sort_field != 'undefined' && $request->sort_field != 'null'  &&
-                $request->sort_order != ''  && $request->sort_order != 'undefined' && $request->sort_order != 'null'
-            ) {
-                $dataQuery->orderBy(isset($request->sort_field) ? $request->sort_field : 'id', isset($request->sort_order)  ? $request->sort_order : 'desc');
-            }
-        } else {
-            $dataQuery->orderBy('id', 'desc');
-        }
-
-        if ($request->page_size) {
-            $data = $dataQuery->limit($request->page_size)
-                ->paginate($request->page_size, ['*'], 'page', $request->page)
-                ->toArray();
-        } else {
-            $data = $dataQuery->get();
-        }
-
-        return response()->json([
-            "success" => true,
-            "data" => $data
-        ], 200);
     }
-
     /**
      * Store a newly created resource in storage.
      *

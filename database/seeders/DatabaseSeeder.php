@@ -18,17 +18,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserRoleSeeder::class,
             UserSeeder::class,
-            FacultyCleanSeeder::class,
-            ModuleAndRolePermissionSeeder::class,
-            RefRateSeeder::class,
-            RefStatusSeeder::class,
-            RefCivilStatusSeeder::class,
-            RefNationalitySeeder::class,
-            RefRegionSeeder::class,
-            RefReligionSeeder::class,
-            RefReligionSeeder::class,
+            DepartmentSeeder::class,
             SchoolLevelSeeder::class,
-            RefPositionSeeder::class,
+
         ]);
     }
 }

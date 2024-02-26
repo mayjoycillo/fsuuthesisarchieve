@@ -319,27 +319,6 @@ class UserController extends Controller
                             ]);
                         }
                     }
-
-                    if ($contact_number != "") {
-                        \App\Models\ProfileContactInformation::where("profile_id", $profile_id)->update(['status' => 0]);
-
-                        $findContactInformation = \App\Models\ProfileContactInformation::where("contact_number", $contact_number)
-                            ->where("profile_id", $profile_id)->first();
-
-                        if ($findContactInformation) {
-                            $findContactInformation->fill([
-                                'status' => 1,
-                                'created_by' => auth()->user()->id
-                            ])->save();
-                        } else {
-                            \App\Models\ProfileContactInformation::create([
-                                'contact_number' => $contact_number,
-                                "profile_id" => $profile_id,
-                                'status' => 1,
-                                'updated_by' => auth()->user()->id
-                            ]);
-                        }
-                    }
                 }
 
                 $this->user_persmissions($createUser->id, $request->user_role_id);
@@ -454,29 +433,6 @@ class UserController extends Controller
                     } else {
                         \App\Models\ProfileDepartment::create([
                             'department_id' => $department_id,
-                            "profile_id" => $profile_id,
-                            "created_by" => auth()->user()->id,
-                            'status' => 1,
-                        ]);
-                    }
-                }
-
-                // Contact Information Update & Create
-                if ($contact_number != "") {
-                    \App\Models\ProfileContactInformation::where("profile_id", $profile_id)->update(['status' => 0]);
-
-                    $findContactInformation = \App\Models\ProfileContactInformation::where("contact_number", $contact_number)
-                        ->where("profile_id", $profile_id)
-                        ->first();
-
-                    if ($findContactInformation) {
-                        $findContactInformation->fill([
-                            "status" => 1,
-                            "updated_by" => auth()->user()->id,
-                        ])->save();
-                    } else {
-                        \App\Models\ProfileContactInformation::create([
-                            'contact_number' => $contact_number,
                             "profile_id" => $profile_id,
                             "created_by" => auth()->user()->id,
                             'status' => 1,
@@ -678,30 +634,6 @@ class UserController extends Controller
                     "nationality_id" => $request->nationality_id,
                     "gender" => $request->gender,
                 ]);
-
-                if ($findProfileUpdate->save()) {
-                    ProfileContactInformation::where("profile_id", $findProfile->id)->update(['status' => 0]);
-
-                    $checkContactNumber = ProfileContactInformation::where("profile_id", $findProfile->id)
-                        ->where("contact_number", $request->contact_number)
-                        ->first();
-
-                    if ($checkContactNumber) {
-                        $checkContactNumber->fill(['status' => 1])->save();
-                    } else {
-                        ProfileContactInformation::create([
-                            "profile_id" => $findProfile->id,
-                            "contact_number" => $request->contact_number,
-                            "status" => 1
-                        ]);
-                    }
-
-
-                    $ret = [
-                        "success" => true,
-                        "message" => "Data updated successfully"
-                    ];
-                }
             }
         }
 

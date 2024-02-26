@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RefSubject;
+use App\Models\Books;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
-class RefSubjectController extends Controller
+class BooksController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,9 +16,14 @@ class RefSubjectController extends Controller
      */
     public function index(Request $request)
     {
-        $data = RefSubject::where(function ($query) use ($request) {
+        $data = Books::select([
+            "*",
+
+        ]);
+
+        $data = $data->where(function ($query) use ($request) {
             if ($request->search) {
-                $query->orWhere('subject', 'LIKE', "%$request->search%");
+                $query->orWhere(DB::raw("(bookname)"), 'LIKE', "%$request->search%");
             }
         });
 
@@ -54,24 +60,23 @@ class RefSubjectController extends Controller
      */
     public function store(Request $request)
     {
-        $ret  = [
-            "success" => false,
-            "message" => "Data not " . ($request->id ? "update" : "saved")
+        $ret = [
+            "success" => true,
+            "message" => "Data " . ($request->id ? "updated" : "created") . " successfully",
         ];
 
         $request->validate([
-            'name',
-            'description',
-            'code' => [
+            'bookname' => [
                 'required',
-                Rule::unique('ref_subjects')->ignore($request->id)
+                Rule::unique('books')->ignore($request->id),
             ],
+
         ]);
 
         $data = [
-            "code" => $request->code,
-            "name" => $request->name,
-            "description" => $request->description,
+            "bookname" => $request->bookname,
+            "bookauthor" => $request->bookauthor,
+            "datepublish" => $request->datepublish,
         ];
 
         if ($request->id) {
@@ -84,11 +89,11 @@ class RefSubjectController extends Controller
             ];
         }
 
-        $subject = RefSubject::updateOrCreate([
+        $findbooks = Books::updateOrCreate([
             "id" => $request->id,
         ], $data);
 
-        if ($subject) {
+        if ($findbooks) {
             $ret  = [
                 "success" => true,
                 "message" => "Data " . ($request->id ? "updated" : "saved") . " successfully"
@@ -101,10 +106,10 @@ class RefSubjectController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\RefSubject  $refSubject
+     * @param  \App\Models\Books  $books
      * @return \Illuminate\Http\Response
      */
-    public function show(RefSubject $refSubject)
+    public function show(Books $books)
     {
         //
     }
@@ -113,10 +118,10 @@ class RefSubjectController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\RefSubject  $refSubject
+     * @param  \App\Models\Books  $books
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, RefSubject $refSubject)
+    public function update(Request $request, Books $books)
     {
         //
     }
@@ -124,27 +129,11 @@ class RefSubjectController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\RefSubject  $refSubject
+     * @param  \App\Models\Books  $books
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Books $books)
     {
-        $ret = [
-            "success" => false,
-            "message" => "Data not deleted"
-        ];
-
-        $findData = RefSubject::find($id);
-
-        if ($findData) {
-            if ($findData->delete()) {
-                $ret = [
-                    "success" => true,
-                    "message" => "Data deleted successfully"
-                ];
-            }
-        }
-
-        return response()->json($ret, 200);
+        //
     }
 }

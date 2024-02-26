@@ -16,46 +16,6 @@ class UserPermissionController extends Controller
      */
     public function index(Request $request)
     {
-        $data = Module::with(["module_buttons"])->where("system_id", $request->system_id)->get();
-
-        $data = $data->map(function ($item) use ($request) {
-            $module_buttons = $item->module_buttons->map(function ($item2) use ($request) {
-                $user_permissions = UserPermission::where("user_id", $request->user_id)
-                    ->where("mod_button_id", $item2->id)
-                    ->first();
-
-                $status = 0;
-                $user_permission_id = 0;
-
-                if ($user_permissions) {
-                    $status = $user_permissions->status;
-                    $user_permission_id = $user_permissions->id;
-                }
-
-                return [
-                    "mod_button_code" => $item2->mod_button_code,
-                    "mod_button_name" => $item2->mod_button_name,
-                    "mod_button_description" => $item2->mod_button_description,
-                    "status" => $status,
-                    "user_permission_id" => $user_permission_id,
-                ];
-            });
-
-            return [
-                "id" => $item->id,
-                "module_code" => $item->module_code,
-                "module_name" => $item->module_name,
-                "description" => $item->description,
-                "module_buttons" => $module_buttons
-            ];
-        });
-
-        $ret = [
-            "success" => false,
-            "data" => $data
-        ];
-
-        return response()->json($ret, 200);
     }
 
     /**
@@ -77,48 +37,7 @@ class UserPermissionController extends Controller
      */
     public function show($id)
     {
-        $data = Module::with(["module_buttons"])->get();
-
-        $data = $data->map(function ($item) use ($id) {
-            $module_buttons = $item->module_buttons->map(function ($item2) use ($id) {
-                $user_permissions = UserPermission::where("user_id", $id)
-                    ->where("mod_button_id", $item2->id)
-                    ->first();
-
-                $status = 0;
-                $user_permission_id = 0;
-
-                if ($user_permissions) {
-                    $status = $user_permissions->status;
-                    $user_permission_id = $user_permissions->id;
-                }
-
-                return [
-                    "mod_button_code" => $item2->mod_button_code,
-                    "mod_button_name" => $item2->mod_button_name,
-                    "mod_button_description" => $item2->mod_button_description,
-                    "status" => $status,
-                    "user_permission_id" => $user_permission_id,
-                ];
-            });
-
-            return [
-                "id" => $item->id,
-                "module_code" => $item->module_code,
-                "module_name" => $item->module_name,
-                "description" => $item->description,
-                "module_buttons" => $module_buttons
-            ];
-        });
-
-        $ret = [
-            "success" => false,
-            "data" => $data
-        ];
-
-        return response()->json($ret, 200);
     }
-
     /**
      * Update the specified resource in storage.
      *
