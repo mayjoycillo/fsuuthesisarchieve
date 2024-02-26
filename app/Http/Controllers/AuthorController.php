@@ -2,28 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Books;
+use App\Models\Author;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
-class BooksController extends Controller
+class AuthorController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index(Request $request)
     {
-        $data = Books::select([
+        $data = Author::select([
             "*",
 
         ]);
 
         $data = $data->where(function ($query) use ($request) {
             if ($request->search) {
-                $query->orWhere(DB::raw("(bookname)"), 'LIKE', "%$request->search%");
+                $query->orWhere(DB::raw("(book_id)"), 'LIKE', "%$request->search%");
             }
         });
 
@@ -52,6 +53,7 @@ class BooksController extends Controller
         ], 200);
     }
 
+
     /**
      * Store a newly created resource in storage.
      *
@@ -74,9 +76,9 @@ class BooksController extends Controller
         ]);
 
         $data = [
-            "department_id" => $request->department_id,
-            "bookname" => $request->bookname,
-            "datepublish" => $request->datepublish,
+            "firstname" => $request->firstname,
+            "middlename" => $request->middlename,
+            "lastname" => $request->lastname,
         ];
 
         if ($request->id) {
@@ -89,7 +91,7 @@ class BooksController extends Controller
             ];
         }
 
-        $findbooks = Books::updateOrCreate([
+        $findbooks = Author::updateOrCreate([
             "id" => $request->id,
         ], $data);
 
@@ -103,13 +105,14 @@ class BooksController extends Controller
         return response()->json($ret, 200);
     }
 
+
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Books  $books
+     * @param  \App\Models\Author  $author
      * @return \Illuminate\Http\Response
      */
-    public function show(Books $books)
+    public function show(Author $author)
     {
         //
     }
@@ -118,10 +121,10 @@ class BooksController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Books  $books
+     * @param  \App\Models\Author  $author
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Books $books)
+    public function update(Request $request, Author $author)
     {
         //
     }
@@ -129,10 +132,10 @@ class BooksController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Books  $books
+     * @param  \App\Models\Author  $author
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Books $books)
+    public function destroy(Author $author)
     {
         //
     }

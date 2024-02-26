@@ -52,7 +52,8 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('email_template', App\Http\Controllers\EmailTemplateController::class);
     // END EmailTemplateController
 
-
+    Route::apiResource('books', App\Http\Controllers\EmailTemplateController::class);
+    Route::apiResource('authors', App\Http\Controllers\EmailTemplateController::class);
 
     // SETTINGS
     Route::apiResource('user_role', App\Http\Controllers\UserRoleController::class);
