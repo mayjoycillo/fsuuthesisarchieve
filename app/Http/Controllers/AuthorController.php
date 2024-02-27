@@ -76,9 +76,14 @@ class AuthorController extends Controller
         ]);
 
         $data = [
+            "book_id" => $request->book_id,
             "firstname" => $request->firstname,
             "middlename" => $request->middlename,
             "lastname" => $request->lastname,
+            "suffix" => $request->suffix,
+            "role" => $request->role,
+
+
         ];
 
         if ($request->id) {

@@ -22,8 +22,6 @@ class Profile extends Model
         return $this->hasMany(ProfileDepartment::class, "profile_id");
     }
 
-
-
     public function attachments()
     {
         return $this->morphMany(Attachment::class, 'attachmentable');

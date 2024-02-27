@@ -16,12 +16,20 @@ class CreateAuthorsTable extends Migration
         Schema::create('authors', function (Blueprint $table) {
             $table->id();
 
+            $table->integer('book_id')->nullable();
+
             $table->string('firstname')->nullable();
             $table->string('middlename')->nullable();
             $table->string('lastname')->nullable();
-            $table->integer('book_id')->nullable();
+            $table->string('suffix')->nullable();
+            $table->string('role')->nullable();
+
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
+            $table->integer('deleted_by')->nullable();
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

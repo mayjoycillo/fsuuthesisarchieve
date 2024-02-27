@@ -16,9 +16,14 @@ class BooksController extends Controller
      */
     public function index(Request $request)
     {
+
+        $department_book = "SELECT department_name from ref_departments WHERE ref_departments.id = department_books.department_id";
+        $author_name = "SELECT CONCAT(firstname,' ',lastname)  from `authors` WHERE `authors`.book_id=books.id";
+
         $data = Books::select([
             "*",
-
+            DB::raw("($department_book) department_book"),
+            DB::raw("($author_name) author_name"),
         ]);
 
         $data = $data->where(function ($query) use ($request) {
@@ -74,9 +79,15 @@ class BooksController extends Controller
         ]);
 
         $data = [
-            "department_id" => $request->department_id,
+
             "bookname" => $request->bookname,
             "datepublish" => $request->datepublish,
+            "type" => $request->type,
+            "university" => $request->university,
+            "attachment_id" => $request->attachment_id,
+
+
+
         ];
 
         if ($request->id) {
