@@ -24,6 +24,12 @@ class BooksController extends Controller
             "*",
             DB::raw("($department_book) department_book"),
             DB::raw("($author_name) author_name"),
+            DB::raw("bookname"),
+            DB::raw("datepublish"),
+            DB::raw("type"),
+            DB::raw("university"),
+
+
         ]);
 
         $data = $data->where(function ($query) use ($request) {
