@@ -61,16 +61,6 @@ Route::middleware('auth:api')->group(function () {
 
     Route::apiResource('ref_departments', App\Http\Controllers\RefDepartmentController::class);
 
-    Route::apiResource('ref_subject', App\Http\Controllers\RefSubjectController::class);
-    Route::apiResource('ref_section', App\Http\Controllers\RefSectionController::class);
-
-    Route::apiResource('ref_semester', App\Http\Controllers\RefSemesterController::class);
-    Route::apiResource('ref_school_year', App\Http\Controllers\RefSchoolYearController::class);
-
-
-    Route::apiResource('ref_region', App\Http\Controllers\RefRegionController::class);
-
-    Route::apiResource('ref_school_level', App\Http\Controllers\RefSchoolLevelController::class);
 
     // END SETTINGS
 });

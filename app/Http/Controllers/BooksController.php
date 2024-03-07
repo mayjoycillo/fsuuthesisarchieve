@@ -17,18 +17,13 @@ class BooksController extends Controller
     public function index(Request $request)
     {
 
-        $department_book = "SELECT department_name from ref_departments WHERE ref_departments.id = department_books.department_id";
+        $department_book = "";
         $author_name = "SELECT CONCAT(firstname,' ',lastname)  from `authors` WHERE `authors`.book_id=books.id";
 
         $data = Books::select([
             "*",
             DB::raw("($department_book) department_book"),
             DB::raw("($author_name) author_name"),
-            DB::raw("bookname"),
-            DB::raw("datepublish"),
-            DB::raw("type"),
-            DB::raw("university"),
-
 
         ]);
 
