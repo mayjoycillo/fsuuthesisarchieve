@@ -18,26 +18,9 @@ class CreateProfilesTable extends Migration
 
             $table->integer('user_id')->nullable();
             $table->string('school_id')->nullable();
-            $table->string('firstname', 100)->nullable();
-            $table->string('middlename', 100)->nullable();
-            $table->string('lastname', 100)->nullable();
-            $table->string('name_ext', 50)->nullable();
-            $table->string('gender')->nullable();
-            $table->date('birthdate')->nullable();
-            $table->longText('birthplace')->nullable();
-            $table->integer('age')->nullable();
-            $table->integer('civil_status_id')->nullable();
-            $table->integer('nationality_id')->nullable();
-            $table->integer('religion_id')->nullable();
-            $table->string('weight', 20)->nullable();
-            $table->string('height', 20)->nullable();
-            $table->string('height_unit', 10)->nullable();
-            $table->string('blood_type')->nullable();
+            $table->string('fullname')->nullable();
+            $table->string('emailadd')->nullable();
 
-            $table->integer('number_of_brothers')->nullable();
-            $table->integer('number_of_sisters')->nullable();
-
-            $table->string('folder_name')->nullable();
 
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();

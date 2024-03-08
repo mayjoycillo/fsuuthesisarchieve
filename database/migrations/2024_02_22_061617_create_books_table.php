@@ -18,6 +18,7 @@ class CreateBooksTable extends Migration
 
 
 
+            $table->integer('department_id')->nullable();
             $table->string('bookname')->nullable();
             $table->string('datepublish')->nullable();
             $table->string('type')->nullable();
