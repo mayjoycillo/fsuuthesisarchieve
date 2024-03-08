@@ -79,41 +79,59 @@ class BooksController extends Controller
 
         ]);
 
-
-
-        $data = [
-
+        $bookInfo = [
             "department_id" => $request->department_id,
             "bookname" => $request->bookname,
             "datepublish" => date('F Y', strtotime($request->datepublish)),
             "type" => $request->type,
             "university" => $request->university,
             // "attachment_id" => $request->attachment_id,
-
-
-
         ];
 
-        if ($request->id) {
-            $data += [
-                "updated_by" => auth()->user()->id
-            ];
-        } else {
-            $data += [
-                "created_by" => auth()->user()->id
-            ];
+        $createBook = Books::create($bookInfo);
+
+        $book_id = $createBook->id;
+
+        $author_list = $request->author_list;
+
+        if ($book_id != "") {
+
+            if (!empty($author_list)) {
+                foreach ($author_list as $key => $value) {
+                    if (!empty($value['id'])) {
+                        $finddAuthor = \App\Models\Author::where('id', $value['id'])->first();
+
+                        if ($finddAuthor) {
+                            $finddAuthor->fill([
+                                "book_id" => $book_id,
+
+                                "firstname" => $value['firstname'] ?? null,
+                                "middlename" => $value['middlename'] ?? null,
+                                "lastname" => $value['lastname'] ?? null,
+                                "suffix" => $value['suffix'] ?? null,
+                                "role" => $value['role'] ?? null,
+                                // "course" => $value['course'] ?? null,
+                            ])->save();
+                        } else {
+                            \App\Models\Author::create([
+                                "book_id" => $book_id,
+
+                                "firstname" => $value['firstname'] ?? null,
+                                "middlename" => $value['middlename'] ?? null,
+                                "lastname" => $value['lastname'] ?? null,
+                                "suffix" => $value['suffix'] ?? null,
+                                "role" => $value['role'] ?? null,
+                                // "course" => $value['course'] ?? null,
+                            ]);
+                        }
+                    }
+                }
+            }
         }
 
-        $findbooks = Books::updateOrCreate([
-            "id" => $request->id,
-        ], $data);
-
-        if ($findbooks) {
-            $ret  = [
-                "success" => true,
-                "message" => "Data " . ($request->id ? "updated" : "saved") . " successfully"
-            ];
-        }
+        $ret += [
+            "request" => $request->all()
+        ];
 
         return response()->json($ret, 200);
     }

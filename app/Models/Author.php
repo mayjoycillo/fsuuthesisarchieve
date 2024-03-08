@@ -10,6 +10,8 @@ class Author extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $guarded = [];
+
     public function book()
     {
         return $this->belongsTo(Books::class, "book_id");
