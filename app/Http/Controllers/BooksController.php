@@ -103,7 +103,7 @@ class BooksController extends Controller
 
                         if ($finddAuthor) {
                             $finddAuthor->fill([
-                                "book_id" => $book_id,
+                                "book_id" => $createBook->id,
 
                                 "firstname" => $value['firstname'] ?? null,
                                 "middlename" => $value['middlename'] ?? null,
@@ -112,18 +112,18 @@ class BooksController extends Controller
                                 "role" => $value['role'] ?? null,
                                 // "course" => $value['course'] ?? null,
                             ])->save();
-                        } else {
-                            \App\Models\Author::create([
-                                "book_id" => $book_id,
-
-                                "firstname" => $value['firstname'] ?? null,
-                                "middlename" => $value['middlename'] ?? null,
-                                "lastname" => $value['lastname'] ?? null,
-                                "suffix" => $value['suffix'] ?? null,
-                                "role" => $value['role'] ?? null,
-                                // "course" => $value['course'] ?? null,
-                            ]);
                         }
+                    } else {
+                        \App\Models\Author::create([
+                            "book_id" => $createBook->id,
+
+                            "firstname" => $value['firstname'] ?? null,
+                            "middlename" => $value['middlename'] ?? null,
+                            "lastname" => $value['lastname'] ?? null,
+                            "suffix" => $value['suffix'] ?? null,
+                            "role" => $value['role'] ?? null,
+                            // "course" => $value['course'] ?? null,
+                        ]);
                     }
                 }
             }
