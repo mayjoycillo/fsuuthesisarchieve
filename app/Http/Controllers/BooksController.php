@@ -142,9 +142,19 @@ class BooksController extends Controller
      * @param  \App\Models\Books  $books
      * @return \Illuminate\Http\Response
      */
-    public function show(Books $books)
+    public function show($id)
     {
-        //
+        $data = Books::with([
+            'authors',
+            'ref_departments'
+        ])->find($id);
+
+        $ret = [
+            "success" => true,
+            "data" => $data
+        ];
+
+        return response()->json($ret, 200);
     }
 
     /**
@@ -156,7 +166,63 @@ class BooksController extends Controller
      */
     public function update(Request $request, Books $books)
     {
-        //
+        $ret = [
+            "success" => true,
+            "message" => "Data updated successfully",
+        ];
+
+        $request->validate([
+            'bookname' => [
+                'required',
+                Rule::unique('books')->ignore($books->id),
+            ],
+        ]);
+
+        $bookInfo = [
+            "department_id" => $request->department_id,
+            "bookname" => $request->bookname,
+            "datepublish" => date('F Y', strtotime($request->datepublish)),
+            "type" => $request->type,
+            "university" => $request->university,
+            // "attachment_id" => $request->attachment_id,
+        ];
+
+        $books->update($bookInfo);
+
+        $author_list = $request->author_list;
+
+        if (!empty($author_list)) {
+            foreach ($author_list as $key => $value) {
+                if (!empty($value['id'])) {
+                    $findAuthor = \App\Models\Author::find($value['id']);
+
+                    if ($findAuthor) {
+                        $findAuthor->update([
+                            "firstname" => $value['firstname'] ?? null,
+                            "middlename" => $value['middlename'] ?? null,
+                            "lastname" => $value['lastname'] ?? null,
+                            "suffix" => $value['suffix'] ?? null,
+                            "role" => $value['role'] ?? null,
+                        ]);
+                    }
+                } else {
+                    \App\Models\Author::create([
+                        "book_id" => $books->id,
+                        "firstname" => $value['firstname'] ?? null,
+                        "middlename" => $value['middlename'] ?? null,
+                        "lastname" => $value['lastname'] ?? null,
+                        "suffix" => $value['suffix'] ?? null,
+                        "role" => $value['role'] ?? null,
+                    ]);
+                }
+            }
+        }
+
+        $ret += [
+            "request" => $request->all()
+        ];
+
+        return response()->json($ret, 200);
     }
 
     /**

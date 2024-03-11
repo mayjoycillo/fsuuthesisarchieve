@@ -17,6 +17,11 @@ class Books extends Model
         return $this->hasMany(Author::class, "book_id");
     }
 
+    public function ref_departments()
+    {
+        return $this->belongsTo(RefDepartment::class, "department_id");
+    }
+
     public function attachments()
     {
         return $this->morphMany(Attachment::class, 'attachmentable');
