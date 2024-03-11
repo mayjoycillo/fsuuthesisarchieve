@@ -15,26 +15,63 @@ class DepartmentSeeder extends Seeder
     public function run()
     {
         $data = [
+
             [
-                'department_name' => 'CSP',
+                'department_name' => 'Accountancy Program',
                 'created_by' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'department_name' => 'TEP',
+                'department_name' => 'Arts and Sciences Program',
                 'created_by' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'department_name' => 'ETP',
+                'department_name' => 'Business Administration Program',
                 'created_by' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'department_name' => 'CJEP',
+                'department_name' => 'Computer Studies Program',
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'department_name' => 'Criminal Justice Education Program',
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'department_name' => 'Engineering and Technology Program',
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'department_name' => 'Nursing Program',
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'department_name' => 'Teacher Education Program',
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'department_name' => 'Graduate Studies',
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'department_name' => 'College of  Law',
                 'created_by' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),

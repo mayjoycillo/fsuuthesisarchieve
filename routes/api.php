@@ -57,7 +57,7 @@ Route::middleware('auth:api')->group(function () {
 
 
     // SETTINGS
-    Route::apiResource('user_role', App\Http\Controllers\UserRoleController::class);
+    Route::apiResource('user_roles', App\Http\Controllers\UserRoleController::class);
 
     Route::apiResource('ref_departments', App\Http\Controllers\RefDepartmentController::class);
 
