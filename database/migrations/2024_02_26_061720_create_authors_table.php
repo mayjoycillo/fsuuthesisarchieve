@@ -18,11 +18,8 @@ class CreateAuthorsTable extends Migration
 
             $table->integer('book_id')->nullable();
 
-            $table->string('firstname')->nullable();
-            $table->string('middlename')->nullable();
-            $table->string('lastname')->nullable();
-            $table->string('suffix')->nullable();
-            $table->string('role')->nullable();
+            $table->integer('profile_id')->nullable();
+
 
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();

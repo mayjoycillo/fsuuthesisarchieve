@@ -23,9 +23,10 @@ class CreateProfilesTable extends Migration
             $table->string('lastname')->nullable();
             $table->string('suffix')->nullable();
             $table->string('contact')->nullable();
-            $table->string('role')->nullable();
             $table->string('course')->nullable();
-            $table->string('graduation_year')->nullable();
+            $table->string('role')->nullable();
+
+
 
 
             $table->integer('created_by')->nullable();

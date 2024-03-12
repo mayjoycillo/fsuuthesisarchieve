@@ -17,8 +17,13 @@ class AuthorController extends Controller
 
     public function index(Request $request)
     {
+        $book_id = "SELECT id FROM books WHERE books.id = authors.book_id";
+        $profile_id = "SELECT id FROM `profiles` WHERE profiles.id = authors.profile_id";
+
         $data = Author::select([
             "*",
+            DB::raw("($book_id) book_id"),
+            DB::raw("($profile_id) profile_id"),
 
         ]);
 
@@ -77,12 +82,7 @@ class AuthorController extends Controller
 
         $data = [
             "book_id" => $request->book_id,
-            "firstname" => $request->firstname,
-            "middlename" => $request->middlename,
-            "lastname" => $request->lastname,
-            "suffix" => $request->suffix,
-            "role" => $request->role,
-
+            "profile_id" => $request->profile_id,
 
         ];
 
@@ -106,6 +106,7 @@ class AuthorController extends Controller
                 "message" => "Data " . ($request->id ? "updated" : "saved") . " successfully"
             ];
         }
+
 
         return response()->json($ret, 200);
     }

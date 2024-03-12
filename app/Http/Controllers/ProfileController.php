@@ -25,6 +25,7 @@ class ProfileController extends Controller
         $fullname = "CONCAT(firstname, IF(lastname IS NOT NULL, CONCAT(' ', lastname), ''))";
         $usernames = "SELECT username FROM users WHERE users.id = profiles.user_id";
         $email = "SELECT email FROM users WHERE users.id = profiles.user_id";
+        $user_role_id = "SELECT user_role_id FROM users WHERE users.id = profiles.user_id";
         $school_id = "REPLACE(school_id, '-', '')";
 
         $data = Profile::select([
@@ -32,14 +33,16 @@ class ProfileController extends Controller
             DB::raw("($fullname) fullname"),
             DB::raw("($usernames) username"),
             DB::raw("($email) email"),
+            DB::raw("($user_role_id) user_role_id"),
             DB::raw("($school_id) school_id"),
         ]);
 
-        $data = $data->where(function ($query) use ($request, $fullname, $usernames, $email, $school_id) {
+        $data = $data->where(function ($query) use ($request, $fullname, $usernames, $email, $user_role_id, $school_id) {
             if ($request->search) {
                 $query->orWhere(DB::raw("($fullname)"), 'LIKE', "%$request->search%");
                 $query->orWhere(DB::raw("($usernames)"), 'LIKE', "%$request->search%");
                 $query->orWhere(DB::raw("($email)"), 'LIKE', "%$request->search%");
+                $query->orWhere(DB::raw("($user_role_id)"), 'LIKE', "%$request->search%");
                 $query->orWhere(DB::raw("($school_id)"), 'LIKE', "%$request->search%");
             }
         });
@@ -126,15 +129,15 @@ class ProfileController extends Controller
         if ($createUser) {
             $dataProfile = [
                 "user_id" => $createUser->id,
+                "school_id" => $request->school_id,
                 "firstname" => $request->firstname,
                 "middlename" => $request->middlename,
                 "lastname" => $request->lastname,
-                "name_ext" => $request->extensionname,
-                "birthplace" => $request->placeofbirth,
-                "birthdate" => new DateTime($request->dateofbirth),
-                "gender" => $request->gender,
-                "nationality_id" => $request->nationality,
-                "religion_id" => $request->religion,
+                "suffix" => $request->suffix,
+                "role" => $request->role,
+                "course" => $request->course,
+                "contact" => $request->contact,
+
             ];
 
             $profile = Profile::create($dataProfile);

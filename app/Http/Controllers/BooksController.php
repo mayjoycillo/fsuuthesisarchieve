@@ -115,49 +115,61 @@ class BooksController extends Controller
                                 "user_role_id" => 4,
                                 "status" => "Active"
                             ])->save();
-                        } else {
-                            $createUser = \App\Models\User::create([
-                                "username" => $value['firstname']  . "." . $value['lastname'],
-                                "email" => $value['firstname']  . "." . $value['lastname'] . "@gmail.com",
-                                "password" => Hash::make($value['lastname']),
-                                "user_role_id" => 4,
-                                "status" => "Active"
+                        }
+                    } else {
+                        $createUser = \App\Models\User::create([
+                            "username" => $value['firstname']  . "." . $value['lastname'],
+                            "email" => $value['firstname']  . "." . $value['lastname'] . "@gmail.com",
+                            "password" => Hash::make($value['lastname']),
+                            "user_role_id" => 4,
+                            "status" => "Active"
 
-                            ]);
+                        ]);
 
-                            //create and update profile
-                            if ($createUser) {
-                                $findProfilebyId = \App\Models\Profile::where('id', $value['id'])->first();
+                        //create and update profile
+                        if ($createUser) {
+                            $findProfilebyId = \App\Models\Profile::where('user_id', $createUser->id)->first();
 
-                                if ($findProfilebyId) {
-                                    $findProfilebyId->fill([
-                                        "firstname" => $value['firstname'] ?? null,
-                                        "middlename" => $value['middlename'] ?? null,
-                                        "lastname" => $value['lastname'] ?? null,
-                                        "suffix" => $value['suffix'] ?? null,
-                                        "role" => $value['role'] ?? null,
-                                        // "course" => $value['course'] ?? null,
+                            if ($findProfilebyId) {
+                                $findProfilebyId->fill([
+                                    "user_id" => $createUser->id,
 
-                                        // "course" => $value['course'] ?? null,
-                                    ])->save();
-                                } else {
-                                    $createAuthor = \App\Models\Profile::create([
-                                        "firstname" => $value['firstname'] ?? null,
-                                        "middlename" => $value['middlename'] ?? null,
-                                        "lastname" => $value['lastname'] ?? null,
-                                        "suffix" => $value['suffix'] ?? null,
-                                        "role" => $value['role'] ?? null,
-                                        // "course" => $value['course'] ?? null,
+                                    "firstname" => $value['firstname'] ?? null,
+                                    "middlename" => $value['middlename'] ?? null,
+                                    "lastname" => $value['lastname'] ?? null,
+                                    "suffix" => $value['suffix'] ?? null,
+                                    "role" => $value['role'] ?? null,
+                                    "course" => $value['course'] ?? null,
+                                    "school_id" => $value['school_id'] ?? null,
+                                    "contact" => $value['contact'] ?? null,
 
-                                        // "course" => $value['course'] ?? null,
-                                    ]);
-                                }
+                                ])->save();
+                            } else {
+                                $createAuthor = \App\Models\Profile::create([
+                                    "user_id" => $createUser->id,
+
+                                    "firstname" => $value['firstname'] ?? null,
+                                    "middlename" => $value['middlename'] ?? null,
+                                    "lastname" => $value['lastname'] ?? null,
+                                    "suffix" => $value['suffix'] ?? null,
+                                    "role" => $value['role'] ?? null,
+                                    "course" => $value['course'] ?? null,
+                                    "school_id" => $value['school_id'] ?? null,
+                                    "contact" => $value['contact'] ?? null,
+                                ]);
                             }
                         }
                     }
                 }
             }
         }
+
+        // $findAuthorbyId = \App\Models\Author::where('book_id', $book_id)->first();
+
+        \App\Models\Author::create([
+            "book_id" => $book_id,
+            "profile_id" => $createAuthor->id,
+        ]);
 
         $ret += [
             "request" => $request->all()
@@ -175,6 +187,7 @@ class BooksController extends Controller
     public function show($id)
     {
         $data = Books::with([
+            'profiles',
             'authors',
             'ref_departments'
         ])->find($id);

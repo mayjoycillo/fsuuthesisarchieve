@@ -40,7 +40,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('user_permission_status', [App\Http\Controllers\UserPermissionController::class, 'user_permission_status']);
     Route::apiResource('user_permission', App\Http\Controllers\UserPermissionController::class);
     // END UserPermissionController
-
+    Route::apiResource('profile', \App\Http\Controllers\ProfileController::class);
 
 
     // UserRolePermissionController

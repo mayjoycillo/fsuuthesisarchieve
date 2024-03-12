@@ -16,4 +16,9 @@ class Author extends Model
     {
         return $this->belongsTo(Books::class, "book_id");
     }
+
+    public function profile()
+    {
+        return $this->belongsTo(Profile::class, "profile_id");
+    }
 }
