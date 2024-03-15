@@ -27,6 +27,7 @@ class ProfileController extends Controller
         $email = "SELECT email FROM users WHERE users.id = profiles.user_id";
         $user_role_id = "SELECT user_role_id FROM users WHERE users.id = profiles.user_id";
         $school_id = "REPLACE(school_id, '-', '')";
+        $user_role = "SELECT (SELECT role FROM user_roles WHERE user_roles.id = users.user_role_id) FROM users WHERE users.id = `profiles`.user_id";
 
         $data = Profile::select([
             "*",
@@ -35,6 +36,8 @@ class ProfileController extends Controller
             DB::raw("($email) email"),
             DB::raw("($user_role_id) user_role_id"),
             DB::raw("($school_id) school_id"),
+            DB::raw("($user_role) user_role"),
+
         ]);
 
         $data = $data->where(function ($query) use ($request, $fullname, $usernames, $email, $user_role_id, $school_id) {

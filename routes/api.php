@@ -40,20 +40,25 @@ Route::middleware('auth:api')->group(function () {
     Route::post('user_permission_status', [App\Http\Controllers\UserPermissionController::class, 'user_permission_status']);
     Route::apiResource('user_permission', App\Http\Controllers\UserPermissionController::class);
     // END UserPermissionController
-    Route::apiResource('profile', \App\Http\Controllers\ProfileController::class);
-
 
     // UserRolePermissionController
     Route::apiResource('user_role_permission', App\Http\Controllers\UserRolePermissionController::class);
     // END UserRolePermissionController
+
+    Route::post('profile_update', [App\Http\Controllers\ProfileController::class, "profile_update"]);
+    Route::apiResource('profiles', \App\Http\Controllers\ProfileController::class);
+
 
     // EmailTemplateController
     Route::post('email_template_multiple', [App\Http\Controllers\EmailTemplateController::class, 'email_template_multiple']);
     Route::apiResource('email_template', App\Http\Controllers\EmailTemplateController::class);
     // END EmailTemplateController
 
+
+    Route::post('update_book/{id}', [App\Http\Controllers\BooksController::class, 'update_book']);
     Route::apiResource('books', App\Http\Controllers\BooksController::class);
     Route::apiResource('authors', App\Http\Controllers\AuthorController::class);
+
 
 
     // SETTINGS

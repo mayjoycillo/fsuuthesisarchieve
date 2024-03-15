@@ -18,8 +18,7 @@ class AuthorController extends Controller
     public function index(Request $request)
     {
         $book_id = "SELECT id FROM books WHERE books.id = authors.book_id";
-        $profile_id = "SELECT id FROM `profiles` WHERE profiles.id = authors.profile_id";
-
+        $profile_id = "SELECT CONCAT(firstname, IF(lastname IS NOT NULL, CONCAT(' ', lastname), '')) FROM `profiles` WHERE profiles.id = `authors`.profile_id";
         $data = Author::select([
             "*",
             DB::raw("($book_id) book_id"),

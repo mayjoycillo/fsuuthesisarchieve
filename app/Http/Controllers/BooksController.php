@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attachment;
 use App\Models\Books;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class BooksController extends Controller
 {
@@ -27,9 +29,11 @@ class BooksController extends Controller
         ])
             ->with([
                 'authors' => function ($query) {
-                    $query->orderBy("id", "desc");
+                    $query->with(['profile'])->orderBy("id", "desc");
                 },
-
+                "attachments" => function ($query) {
+                    $query->orderBy("id", "desc");
+                }
             ]);
 
         $data = $data->where(function ($query) use ($request) {
@@ -53,9 +57,22 @@ class BooksController extends Controller
             $data = $data->limit($request->page_size)
                 ->paginate($request->page_size, ['*'], 'page', $request->page)
                 ->toArray();
+
+            $data["data"] = collect($data['data'])->map(function ($value) {
+                $value['attachments'] = collect($value['attachments'])->map(function ($value) {
+                    $pdf_file = base64_encode(file_get_contents($value['file_path']));
+
+                    $value['pdf_file'] = "data:application/pdf;base64," . $pdf_file;
+                    return $value;
+                });
+
+                return $value;
+            });
         } else {
             $data = $data->get();
         }
+
+        // return Books::all();
 
         return response()->json([
             'success'   => true,
@@ -72,8 +89,9 @@ class BooksController extends Controller
     public function store(Request $request)
     {
         $ret = [
-            "success" => true,
-            "message" => "Data " . ($request->id ? "updated" : "created") . " successfully",
+            "success" => false,
+            "message" => "Data not " . ($request->id ? "updated" : "created"),
+            "request" => $request->all()
         ];
 
         $request->validate([
@@ -82,7 +100,11 @@ class BooksController extends Controller
                 Rule::unique('books')->ignore($request->id),
             ],
 
+            // 'file' => 'required|mimes:pdf|max:2048', // Max file size: 2MB
+
         ]);
+
+
 
         $bookInfo = [
             "department_id" => $request->department_id,
@@ -93,13 +115,32 @@ class BooksController extends Controller
             // "attachment_id" => $request->attachment_id,
         ];
 
-        $createBook = Books::create($bookInfo);
+        $findBook = Books::updateOrCreate([
+            'id' => $request->id ? $request->id : null
+        ], $bookInfo);
 
-        $book_id = $createBook->id;
 
         $author_list = $request->author_list;
 
-        if ($book_id != "") {
+        if ($findBook) {
+            if ($request->hasFile('pdf_file')) {
+                $this->create_attachment($findBook, $request->file("pdf_file"), [
+                    "folder_name" => "books",
+                    "file_type" => "document",
+                    "file_description" => "Books Attachments"
+                ]);
+            }
+            // Store the file
+            // $path = $request->file('file')->store('attachments');
+
+            // // Create attachment record
+            // $attachment = new Attachment();
+            // $attachment->file_name = $request->file('file')->getClientOriginalName();
+            // $attachment->file_description = $request->input('file_description');
+            // $attachment->file_path = $path;
+            // $attachment->file_type = $request->file('file')->getMimeType();
+            // $attachment->file_size = $request->file('file')->getSize();
+            // $attachment->save();
 
             if (!empty($author_list)) {
                 foreach ($author_list as $key => $value) {
@@ -157,23 +198,25 @@ class BooksController extends Controller
                                     "school_id" => $value['school_id'] ?? null,
                                     "contact" => $value['contact'] ?? null,
                                 ]);
+
+                                if ($createAuthor) {
+                                    \App\Models\Author::create([
+                                        "book_id" =>  $findBook->id,
+                                        "profile_id" => $createAuthor->id,
+                                    ]);
+                                }
                             }
                         }
                     }
                 }
             }
+
+            $ret = [
+                "success" => true,
+                "message" => "Data " . ($request->id ? "updated" : "created") . " successfully",
+                "request" => $request->all()
+            ];
         }
-
-        // $findAuthorbyId = \App\Models\Author::where('book_id', $book_id)->first();
-
-        \App\Models\Author::create([
-            "book_id" => $book_id,
-            "profile_id" => $createAuthor->id,
-        ]);
-
-        $ret += [
-            "request" => $request->all()
-        ];
 
         return response()->json($ret, 200);
     }
@@ -187,8 +230,8 @@ class BooksController extends Controller
     public function show($id)
     {
         $data = Books::with([
-            'profiles',
-            'authors',
+            // 'profiles',
+            'authors.profile',
             'ref_departments'
         ])->find($id);
 
@@ -209,15 +252,32 @@ class BooksController extends Controller
      */
     public function update(Request $request, Books $books)
     {
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Books  $books
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Books $books)
+    {
+        //
+    }
+
+
+    public function update_book(Request $request)
+    {
         $ret = [
             "success" => true,
             "message" => "Data updated successfully",
+            "request" => $request->all()
         ];
 
         $request->validate([
             'bookname' => [
                 'required',
-                Rule::unique('books')->ignore($books->id),
+                Rule::unique('books')->ignore($request->id),
             ],
         ]);
 
@@ -230,52 +290,49 @@ class BooksController extends Controller
             // "attachment_id" => $request->attachment_id,
         ];
 
-        $books->update($bookInfo);
+        $findBook = Books::updateOrCreate([
+            'id' => $request->id
+        ], $bookInfo);
 
         $author_list = $request->author_list;
 
-        if (!empty($author_list)) {
-            foreach ($author_list as $key => $value) {
-                if (!empty($value['id'])) {
-                    $findAuthor = \App\Models\Author::find($value['id']);
+        if ($findBook) {
+            if (!empty($author_list)) {
+                foreach ($author_list as $key => $value) {
+                    if (!empty($value['id'])) {
+                        $findAuthor = \App\Models\Profile::find($value['id']);
 
-                    if ($findAuthor) {
-                        $findAuthor->update([
+                        if ($findAuthor) {
+                            $findAuthor->update([
+
+                                "firstname" => $value['firstname'] ?? null,
+                                "middlename" => $value['middlename'] ?? null,
+                                "lastname" => $value['lastname'] ?? null,
+                                "suffix" => $value['suffix'] ?? null,
+                                "role" => $value['role'] ?? null,
+                                "course" => $value['course'] ?? null,
+                                "school_id" => $value['school_id'] ?? null,
+                                "contact" => $value['contact'] ?? null,
+
+                            ]);
+                        }
+                    } else {
+                        \App\Models\Profile::create([
                             "firstname" => $value['firstname'] ?? null,
                             "middlename" => $value['middlename'] ?? null,
                             "lastname" => $value['lastname'] ?? null,
                             "suffix" => $value['suffix'] ?? null,
                             "role" => $value['role'] ?? null,
+                            "course" => $value['course'] ?? null,
+                            "school_id" => $value['school_id'] ?? null,
+                            "contact" => $value['contact'] ?? null,
                         ]);
                     }
-                } else {
-                    \App\Models\Author::create([
-                        "book_id" => $books->id,
-                        "firstname" => $value['firstname'] ?? null,
-                        "middlename" => $value['middlename'] ?? null,
-                        "lastname" => $value['lastname'] ?? null,
-                        "suffix" => $value['suffix'] ?? null,
-                        "role" => $value['role'] ?? null,
-                    ]);
                 }
             }
         }
 
-        $ret += [
-            "request" => $request->all()
-        ];
 
         return response()->json($ret, 200);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Books  $books
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Books $books)
-    {
-        //
     }
 }

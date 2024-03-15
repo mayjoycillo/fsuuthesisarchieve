@@ -22,6 +22,11 @@ class Profile extends Model
         return $this->hasMany(ProfileDepartment::class, "profile_id");
     }
 
+    public function profile_contact_informations()
+    {
+        return $this->hasMany(ProfileContactInformation::class, "contact");
+    }
+
     public function author()
     {
         return $this->hasMany(Author::class, "profile_id");

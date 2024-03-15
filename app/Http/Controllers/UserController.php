@@ -26,12 +26,14 @@ class UserController extends Controller
         $type = "SELECT `type` FROM user_roles WHERE user_roles.id = users.user_role_id";
         $role = "SELECT `role` FROM user_roles WHERE user_roles.id = users.user_role_id";
         $fullname = "SELECT CONCAT(firstname, IF(lastname, CONCAT(' ', lastname), '')) FROM profiles WHERE profiles.user_id=users.id ORDER BY id LIMIT 1";
+        // $school_ifd = "SELECT school_id FROM `profiles` WHERE `profiles`.user_id = users.id";
 
         $data = User::select([
             "*",
             DB::raw("($type) type"),
             DB::raw("($role) role"),
             DB::raw("($fullname) fullname"),
+            // DB::raw("($school_ifd) school_id"),
             DB::raw("email"),
             DB::raw("username"),
         ]);
@@ -153,9 +155,7 @@ class UserController extends Controller
                     "attachments" => function ($query5) {
                         $query5->orderBy("id", "desc")->limit(1);
                     },
-                    // "schoo_id" => function ($query6) {
-                    //     $query6->orderBy("id", "desc");
-                    // }
+
                 ]);
             }
         ])->find($id);
@@ -358,12 +358,13 @@ class UserController extends Controller
 
             $dataProfile = [
                 "firstname" => $request->firstname,
+                "middlename" => $request->middlename ?? null,
                 "lastname" => $request->lastname,
                 "user_id" => $finduser->id,
                 "school_id" => $request->school_id,
-                "civil_status_id" => $request->civil_status_id,
-                "nationality_id" => $request->nationality_id,
-                "gender" => $request->gender,
+                "suffix" => $request->suffix ?? null,
+                "course" => $request->course,
+                "contact" => $request->contact,
             ];
 
             $profile_id = "";

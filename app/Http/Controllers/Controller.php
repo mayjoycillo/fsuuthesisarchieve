@@ -34,26 +34,17 @@ class Controller extends BaseController
 
     public function create_attachment($model, $file, $option)
     {
-        $action = !empty($option['action']) ? $option['action'] : "";
-        $id = !empty($option['id']) ? $option['id'] : "";
-        $folder_name = !empty($option['folder_name']) ? $option['folder_name'] : null;
-        $file_description = !empty($option['file_description']) ? $option['file_description'] : null;
-        $root_folder = !empty($option['root_folder']) ? $option['root_folder'] : null;
-        $file_type = !empty($option['file_type']) ? $option['file_type'] : null;
+        $folder_name = $option['folder_name'];
 
-        if ($action == 'Add') {
-            $filePathStr = "uploads/attachments";
-
-            if (!empty($root_folder)) {
-                $filePathStr .= "/" . ($root_folder);
-            }
-            if (!empty($folder_name)) {
-                $filePathStr .= "/" . ($folder_name);
-            }
+        if (!empty($folder_name)) {
+            $action = !empty($option['action']) ? $option['action'] : "";
+            $id = !empty($option['id']) ? $option['id'] : "";
+            $file_description = !empty($option['file_description']) ? $option['file_description'] : null;
+            $file_type = !empty($option['file_type']) ? $option['file_type'] : null;
 
             $fileName = $file->getClientOriginalName();
             $filePath = Str::random(10) . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs($filePathStr, $filePath, 'public');
+            $filePath = $file->storeAs($folder_name, $filePath, 'public');
             $fileSize = $this->formatSizeUnits($file->getSize());
 
             $model->attachments()->create([

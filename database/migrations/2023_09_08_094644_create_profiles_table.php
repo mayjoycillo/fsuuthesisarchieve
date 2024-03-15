@@ -17,7 +17,7 @@ class CreateProfilesTable extends Migration
             $table->id();
 
             $table->integer('user_id')->nullable();
-            $table->integer('school_id')->nullable();
+            $table->string('school_id')->nullable();
             $table->string('firstname')->nullable();
             $table->string('middlename')->nullable();
             $table->string('lastname')->nullable();
