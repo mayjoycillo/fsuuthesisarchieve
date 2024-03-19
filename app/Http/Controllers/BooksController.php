@@ -21,10 +21,13 @@ class BooksController extends Controller
     {
 
         $department_name = "SELECT department_name FROM ref_departments WHERE ref_departments.id = books.department_id";
+        $year_publish = "DATE_FORMAT(datepublish, '%M %Y')";
+
 
         $data = Books::select([
             "*",
             DB::raw("($department_name) department_name"),
+            DB::raw("($year_publish) year_publish_formatted")
 
         ])
             ->with([
@@ -36,21 +39,33 @@ class BooksController extends Controller
                 }
             ]);
 
-        $data = $data->where(function ($query) use ($request) {
+        $data->where(function ($query) use ($request, $department_name) {
             if ($request->search) {
-                $query->orWhere(DB::raw("(bookname)"), 'LIKE', "%$request->search%");
+                $query->orWhere(DB::raw("($department_name)"), 'LIKE', "%$request->search%");
+                $query->orWhere("bookname", 'LIKE', "%$request->search%");
             }
         });
+
+        if ($request->year_range) {
+            $year_range = explode(",", $request->year_range);
+
+            $data->whereYear("datepublish", ">=", $year_range[0]);
+            $data->whereYear("datepublish", "<=", $year_range[1]);
+        }
+
+        if ($request->department_id) {
+            $data->where("department_id",    $request->department_id);
+        }
 
         if ($request->sort_field && $request->sort_order) {
             if (
                 $request->sort_field != '' && $request->sort_field != 'undefined' && $request->sort_field != 'null'  &&
                 $request->sort_order != ''  && $request->sort_order != 'undefined' && $request->sort_order != 'null'
             ) {
-                $data = $data->orderBy(isset($request->sort_field) ? $request->sort_field : 'id', isset($request->sort_order)  ? $request->sort_order : 'desc');
+                $data->orderBy(isset($request->sort_field) ? $request->sort_field : 'id', isset($request->sort_order)  ? $request->sort_order : 'desc');
             }
         } else {
-            $data = $data->orderBy('id', 'desc');
+            $data->orderBy('id', 'desc');
         }
 
         if ($request->page_size) {
@@ -76,7 +91,7 @@ class BooksController extends Controller
 
         return response()->json([
             'success'   => true,
-            'data'      => $data
+            'data'      => $data,
         ], 200);
     }
 
@@ -109,7 +124,7 @@ class BooksController extends Controller
         $bookInfo = [
             "department_id" => $request->department_id,
             "bookname" => $request->bookname,
-            "datepublish" => date('F Y', strtotime($request->datepublish)),
+            "datepublish" => $request->datepublish,
             "type" => $request->type,
             "university" => $request->university,
             // "attachment_id" => $request->attachment_id,
@@ -130,51 +145,62 @@ class BooksController extends Controller
                     "file_description" => "Books Attachments"
                 ]);
             }
-            // Store the file
-            // $path = $request->file('file')->store('attachments');
-
-            // // Create attachment record
-            // $attachment = new Attachment();
-            // $attachment->file_name = $request->file('file')->getClientOriginalName();
-            // $attachment->file_description = $request->input('file_description');
-            // $attachment->file_path = $path;
-            // $attachment->file_type = $request->file('file')->getMimeType();
-            // $attachment->file_size = $request->file('file')->getSize();
-            // $attachment->save();
 
             if (!empty($author_list)) {
                 foreach ($author_list as $key => $value) {
                     if (!empty($value['id'])) {
-                        //create, update user
-                        $findUser = \App\Models\User::where('id', $value['id'])->first();
+                        $findAuthor = \App\Models\Author::find($value['id']);
 
-                        if ($findUser) {
-                            $findUser->fill([
-                                "username" => $value['firstname']  . "." . $value['lastname'],
-                                "email" => $value['firstname']  . "." . $value['lastname'] . "@gmail.com",
+                        if ($findAuthor) {
+                            $findProfile = \App\Models\Profile::find($findAuthor->profile_id);
+
+                            if ($findProfile) {
+                                $findProfile->update([
+                                    "firstname" => $value['firstname'] ?? null,
+                                    "middlename" => $value['middlename'] ?? null,
+                                    "lastname" => $value['lastname'] ?? null,
+                                    "suffix" => $value['suffix'] ?? null,
+                                    "role" => $value['role'] ?? null,
+                                    "course" => $value['course'] ?? null,
+                                    "school_id" => $value['school_id'] ?? null,
+                                    "contact" => $value['contact'] ?? null,
+                                ]);
+                            }
+                        }
+                    } else {
+                        $email = $value['email'];
+
+                        $user_id = null;
+
+                        $checkUserName = \App\Models\User::where("username", $email)->first();
+                        $checkEmail = \App\Models\User::where("email", $email)->first();
+
+                        if ($checkUserName) {
+                            $user_id = $checkUserName->id;
+                        }
+                        if ($checkEmail) {
+                            $user_id = $checkEmail->id;
+                        }
+
+                        if (!$user_id) {
+                            $createUser = \App\Models\User::create([
+                                "username" => $email,
+                                "email" => $email,
                                 "password" => Hash::make($value['lastname']),
                                 "user_role_id" => 4,
                                 "status" => "Active"
-                            ])->save();
+                            ]);
+
+                            if ($createUser) {
+                                $user_id = $createUser->id;
+                            }
                         }
-                    } else {
-                        $createUser = \App\Models\User::create([
-                            "username" => $value['firstname']  . "." . $value['lastname'],
-                            "email" => $value['firstname']  . "." . $value['lastname'] . "@gmail.com",
-                            "password" => Hash::make($value['lastname']),
-                            "user_role_id" => 4,
-                            "status" => "Active"
 
-                        ]);
-
-                        //create and update profile
-                        if ($createUser) {
-                            $findProfilebyId = \App\Models\Profile::where('user_id', $createUser->id)->first();
+                        if ($user_id) {
+                            $findProfilebyId = \App\Models\Profile::where('user_id', $user_id)->first();
 
                             if ($findProfilebyId) {
                                 $findProfilebyId->fill([
-                                    "user_id" => $createUser->id,
-
                                     "firstname" => $value['firstname'] ?? null,
                                     "middlename" => $value['middlename'] ?? null,
                                     "lastname" => $value['lastname'] ?? null,
@@ -187,8 +213,7 @@ class BooksController extends Controller
                                 ])->save();
                             } else {
                                 $createAuthor = \App\Models\Profile::create([
-                                    "user_id" => $createUser->id,
-
+                                    "user_id" => $user_id,
                                     "firstname" => $value['firstname'] ?? null,
                                     "middlename" => $value['middlename'] ?? null,
                                     "lastname" => $value['lastname'] ?? null,
@@ -284,7 +309,7 @@ class BooksController extends Controller
         $bookInfo = [
             "department_id" => $request->department_id,
             "bookname" => $request->bookname,
-            "datepublish" => date('F Y', strtotime($request->datepublish)),
+            "datepublish" => $request->datepublish,
             "type" => $request->type,
             "university" => $request->university,
             // "attachment_id" => $request->attachment_id,
@@ -300,33 +325,89 @@ class BooksController extends Controller
             if (!empty($author_list)) {
                 foreach ($author_list as $key => $value) {
                     if (!empty($value['id'])) {
-                        $findAuthor = \App\Models\Profile::find($value['id']);
+                        $findAuthor = \App\Models\Author::find($value['id']);
 
                         if ($findAuthor) {
-                            $findAuthor->update([
+                            $findProfile = \App\Models\Profile::find($findAuthor->profile_id);
 
-                                "firstname" => $value['firstname'] ?? null,
-                                "middlename" => $value['middlename'] ?? null,
-                                "lastname" => $value['lastname'] ?? null,
-                                "suffix" => $value['suffix'] ?? null,
-                                "role" => $value['role'] ?? null,
-                                "course" => $value['course'] ?? null,
-                                "school_id" => $value['school_id'] ?? null,
-                                "contact" => $value['contact'] ?? null,
-
-                            ]);
+                            if ($findProfile) {
+                                $findProfile->update([
+                                    "firstname" => $value['firstname'] ?? null,
+                                    "middlename" => $value['middlename'] ?? null,
+                                    "lastname" => $value['lastname'] ?? null,
+                                    "suffix" => $value['suffix'] ?? null,
+                                    "role" => $value['role'] ?? null,
+                                    "course" => $value['course'] ?? null,
+                                    "school_id" => $value['school_id'] ?? null,
+                                    "contact" => $value['contact'] ?? null,
+                                ]);
+                            }
                         }
                     } else {
-                        \App\Models\Profile::create([
-                            "firstname" => $value['firstname'] ?? null,
-                            "middlename" => $value['middlename'] ?? null,
-                            "lastname" => $value['lastname'] ?? null,
-                            "suffix" => $value['suffix'] ?? null,
-                            "role" => $value['role'] ?? null,
-                            "course" => $value['course'] ?? null,
-                            "school_id" => $value['school_id'] ?? null,
-                            "contact" => $value['contact'] ?? null,
-                        ]);
+                        $email = $value['email'];
+
+                        $user_id = null;
+
+                        $checkUserName = \App\Models\User::where("username", $email)->first();
+                        $checkEmail = \App\Models\User::where("email", $email)->first();
+
+                        if ($checkUserName) {
+                            $user_id = $checkUserName->id;
+                        }
+                        if ($checkEmail) {
+                            $user_id = $checkEmail->id;
+                        }
+
+                        if (!$user_id) {
+                            $createUser = \App\Models\User::create([
+                                "username" => $email,
+                                "email" => $email,
+                                "password" => Hash::make($value['lastname']),
+                                "user_role_id" => 4,
+                                "status" => "Active"
+                            ]);
+
+                            if ($createUser) {
+                                $user_id = $createUser->id;
+                            }
+                        }
+
+                        if ($user_id) {
+                            $findProfilebyId = \App\Models\Profile::where('user_id', $user_id)->first();
+
+                            if ($findProfilebyId) {
+                                $findProfilebyId->fill([
+                                    "firstname" => $value['firstname'] ?? null,
+                                    "middlename" => $value['middlename'] ?? null,
+                                    "lastname" => $value['lastname'] ?? null,
+                                    "suffix" => $value['suffix'] ?? null,
+                                    "role" => $value['role'] ?? null,
+                                    "course" => $value['course'] ?? null,
+                                    "school_id" => $value['school_id'] ?? null,
+                                    "contact" => $value['contact'] ?? null,
+
+                                ])->save();
+                            } else {
+                                $createAuthor = \App\Models\Profile::create([
+                                    "user_id" => $user_id,
+                                    "firstname" => $value['firstname'] ?? null,
+                                    "middlename" => $value['middlename'] ?? null,
+                                    "lastname" => $value['lastname'] ?? null,
+                                    "suffix" => $value['suffix'] ?? null,
+                                    "role" => $value['role'] ?? null,
+                                    "course" => $value['course'] ?? null,
+                                    "school_id" => $value['school_id'] ?? null,
+                                    "contact" => $value['contact'] ?? null,
+                                ]);
+
+                                if ($createAuthor) {
+                                    \App\Models\Author::create([
+                                        "book_id" =>  $findBook->id,
+                                        "profile_id" => $createAuthor->id,
+                                    ]);
+                                }
+                            }
+                        }
                     }
                 }
             }
