@@ -296,7 +296,8 @@ class BooksController extends Controller
         $ret = [
             "success" => true,
             "message" => "Data updated successfully",
-            "request" => $request->all()
+            "request" => $request->all(),
+            'author_list' => json_decode($request->author_list, true)
         ];
 
         $request->validate([
@@ -307,11 +308,11 @@ class BooksController extends Controller
         ]);
 
         $bookInfo = [
-            "department_id" => $request->department_id,
-            "bookname" => $request->bookname,
-            "datepublish" => $request->datepublish,
-            "type" => $request->type,
-            "university" => $request->university,
+            "department_id" => $request->department_id ?? null,
+            "bookname" => $request->bookname ?? null,
+            "datepublish" => $request->datepublish ?? null,
+            "type" => $request->type ?? null,
+            "university" => $request->university ?? null,
             // "attachment_id" => $request->attachment_id,
         ];
 
@@ -319,15 +320,16 @@ class BooksController extends Controller
             'id' => $request->id
         ], $bookInfo);
 
-        $author_list = $request->author_list;
 
         if ($findBook) {
-            if (!empty($author_list)) {
+            if ($request->has("author_list")) {
+                $author_list = json_decode($request->author_list, true);
+
                 foreach ($author_list as $key => $value) {
                     if (!empty($value['id'])) {
                         $findAuthor = \App\Models\Author::find($value['id']);
 
-                        if ($findAuthor) {
+                        if ($findAuthor && $findAuthor->book_id == $findBook->id) {
                             $findProfile = \App\Models\Profile::find($findAuthor->profile_id);
 
                             if ($findProfile) {
