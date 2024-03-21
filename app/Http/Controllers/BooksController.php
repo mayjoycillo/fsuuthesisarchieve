@@ -228,6 +228,7 @@ class BooksController extends Controller
                                     \App\Models\Author::create([
                                         "book_id" =>  $findBook->id,
                                         "profile_id" => $createAuthor->id,
+                                        "status" => 1
                                     ]);
                                 }
                             }
@@ -325,6 +326,15 @@ class BooksController extends Controller
             if ($request->has("author_list")) {
                 $author_list = json_decode($request->author_list, true);
 
+                $existingAuthor = \App\Models\Author::where('book_id', $findBook->id)->pluck('book_id')->toArray();
+
+                foreach ($existingAuthor as $current) {
+                    if (!in_array($current, array_column($author_list, 'id'))) {
+                        \App\Models\Author::where('id', $current)
+                            ->update(['status' => 0]);
+                    }
+                }
+
                 foreach ($author_list as $key => $value) {
                     if (!empty($value['id'])) {
                         $findAuthor = \App\Models\Author::find($value['id']);
@@ -406,6 +416,7 @@ class BooksController extends Controller
                                     \App\Models\Author::create([
                                         "book_id" =>  $findBook->id,
                                         "profile_id" => $createAuthor->id,
+                                        "status" => 1
                                     ]);
                                 }
                             }
